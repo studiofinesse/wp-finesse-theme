@@ -1,0 +1,42 @@
+$ratios: (
+	4 3,
+	3 4,
+	16 9
+);
+
+@each $ratio in $ratios {
+	$x: nth($ratio, 1) ;
+	$y: nth($ratio, 2);
+
+	.ratio-#{$x}x#{$y} {
+		@include aspect-ratio($ratio);
+	}
+
+	@each $point, $value in $sizes {
+		@include bp($value) {
+			.#{$point}\:ratio-#{$x}x#{$y} {
+				@include aspect-ratio($ratio);
+			}
+		}
+	}
+}
+
+[class*="ratio-"] {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 0;
+	
+	& > img:not(.logo),
+	& > video,
+	& > iframe,
+	& > .js-map {
+		display: block;
+		position: absolute !important;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+}

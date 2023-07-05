@@ -1,0 +1,73 @@
+@import "lib/config";
+
+.wp-admin [data-name="theme"] {
+
+	ul.acf-radio-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: .5rem;
+		padding: 0;
+		margin: 0;
+
+		&::before,
+		&::after {
+			display: none;
+		}
+
+		&:focus-within {
+			border: none;
+		}
+
+		li {
+			margin-right: 0;
+
+			label {
+				  display: flex;
+				   width: 28px;
+				   height: 28px;
+				   position: relative;
+				   color: #fff;
+
+				   input[type="radio"] {
+						position: absolute;
+						top: 0;
+						left: 0;
+						width: 28px;
+						height: 28px;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						background-color: var(--_theme-color);
+						border-color: #e4e4e4;
+
+						&:focus {
+							outline: none;
+							box-shadow: none;
+						}
+
+						&:checked {
+							outline: 2px solid #007cba;
+							outline-offset: 1px;
+
+							 &::before {
+								display: none;
+								//   content: "\f15e";
+								//   font-family: dashicons;
+								//   width: 20px;
+								//   height: 20px;
+								//   background-color: transparent;
+								//   margin: 1px;
+								//   font-size: 20px;
+								//   color: #fff;
+								//   text-shadow: 1px 1px 2px rgba(0, 0, 0, .2);
+							 }
+						}
+
+						@each $color, $hex in $colors {
+							&[value="#{$color}"] { --_theme-color: {$hex}; }
+						}
+				   }
+			  }
+		 }
+	}
+}

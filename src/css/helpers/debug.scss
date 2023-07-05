@@ -1,0 +1,9 @@
+body.debug {
+	*,
+	*::before,
+	&::after {
+		outline: solid 1px red !important;
+		background: transparent !important;
+		color: black !important;
+	}
+}

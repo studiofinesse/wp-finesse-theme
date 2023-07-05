@@ -1,0 +1,30 @@
+:root {
+	// Grid Config
+	--grid-columns-max: 12;
+	--grid-columns: var(--grid-columns-max);
+	--grid-gap: #{rem(16px)};
+	--grid-column-gap: var(--grid-gap);
+	--grid-row-gap: var(--grid-gap);
+
+	// Flexible column widths outside of a grid
+	--width-cols-3: calc((((var(--container-width) + var(--grid-gap)) / var(--grid-columns-max)) * 3 - var(--grid-gap)));
+    --width-cols-4: calc((((var(--container-width) + var(--grid-gap)) / var(--grid-columns-max)) * 4 - var(--grid-gap)));
+    --width-cols-6: calc((((var(--container-width) + var(--grid-gap)) / var(--grid-columns-max)) * 6 - var(--grid-gap)));
+
+	--width-cols-3-fixed: calc((((var(--container-max-width) + var(--grid-gap)) / var(--grid-columns-max)) * 3 - var(--grid-gap)));
+	--width-cols-4-fixed: calc((((var(--container-max-width) + var(--grid-gap)) / var(--grid-columns-max)) * 4 - var(--grid-gap)));
+	--width-cols-6-fixed: calc((((var(--container-max-width) + var(--grid-gap)) / var(--grid-columns-max)) * 6 - var(--grid-gap)));
+
+	@include bp(lg) {
+		--grid-gap: #{rem(24px)};
+	}
+}
+
+@include utilityClasses((
+	grid\-container: (
+		display: grid,
+		grid-template-columns: repeat(var(--grid-columns), 1fr),
+		gap: var(--grid-row-gap) var(--grid-column-gap),
+		grid-auto-flow: dense,
+	)
+));

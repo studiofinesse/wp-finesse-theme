@@ -1,0 +1,141 @@
+///
+/// Site body base font size.
+///
+/// @type Number
+///
+$site-base-size: 16px !default;
+
+///
+/// Get size value.
+///
+/// @param  {string|number} $size
+/// @return {number|string}
+///
+@function size( $size ) {
+	@return if( global-variable-exists( sizes ) and map-has-key( $sizes, $size ), map-get( $sizes, $size ), $size );
+}
+
+///
+/// Get colour value by name.
+///
+/// @param  {string} $color
+/// @return {color}
+///
+@function color( $color ) {
+	@return if( map-has-key( $colors, $color ), map-get( $colors, $color ), $color );
+}
+
+///
+/// Get unitless number.
+///
+/// @param  {number} $number
+/// @return {number}
+///
+@function no-unit( $number ) {
+	@return $number / ( $number * 0 + 1 );
+}
+
+///
+/// Transform one number to another.
+///
+/// @param  {number} $number
+/// @param  {number} $base
+/// @return {number}
+///
+@function unify( $number, $base ) {
+	$number: size( $number );
+	$from  : unit( $number );
+	$to    : unit( $base );
+	$number: no-unit( $number );
+
+	@if $from != $to {
+		@if $to == px {
+			$number: $number * 16;
+		} @else if $from == px {
+			$number: $number / 16;
+		}
+	}
+
+	@return $number * $base;
+}
+
+///
+/// Get number as rem.
+///
+/// @param  {number} $number
+/// @return {number}
+///
+@function rem( $number ) {
+	@return unify( $number, 1rem );
+}
+
+///
+/// Get number as em.
+///
+/// @param  {number} $number
+/// @param  {number} $base
+/// @return {number}
+///
+@function em( $number, $base: $site-base-size ) {
+	$number: size( $number );
+
+	@return unify( if( unit( $number ) == px, $number / unify( $base, 1px ), $number ), 1em );
+}
+
+///
+/// Get number as px.
+///
+/// @param  {number} $number
+/// @param  {number} $base
+/// @return {number}
+///
+@function px( $number, $base: $site-base-size ) {
+	$number: size( $number );
+
+	@return unify( if( unit( $number ) == em, $number / unify( $base, 1em ), $number ), 1px );
+}
+
+///
+/// Get number as percentage of another.
+///
+/// @param  {number} $number
+/// @param  {number} $total
+/// @return {number}
+///
+@function pc( $number, $total: max ) {
+	@return 100% * $number / unify( $total, $number * 0 + 1 );
+}
+
+///
+/// Get varying value between two breakpoints.
+///
+/// https://fvsch.com/css-locks
+///
+/// @param {number}          $min  - Minimum value.
+/// @param {number}          $max  - Maximum value.
+/// @param {number | string} $from - Breakpoint to scale from.
+/// @param {number | string} $to   - Breakpoint to scale to.
+/// @param {number}          $base - Default 100vw.
+///
+@function vary( $min, $max, $from: min, $to: max, $base: 100vw ) {
+	@if $min == $max {
+		@return $min;
+	}
+
+	$unit: $min / no-unit( $min );
+
+	$from: unify( $from, $unit );
+	$to  : unify( $to, $unit );
+
+	$diff: no-unit( $max - $min );
+	$step: no-unit( $to - $from );
+
+	@if unit( $min ) == px {
+		$x: $diff / $step;
+		$y: $min - $x * $from;
+
+		@return calc(#{$x * $base} #{if( $y > 0, '+', '-' )} #{if( $y > 0, $y, -$y)});
+	} @else {
+		@return calc(#{$min} + #{$diff} * (#{$base} - #{$from}) / #{$step});
+	}
+}

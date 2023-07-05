@@ -1,0 +1,191 @@
+@mixin fluid-type($min-font-size, $max-font-size, $min-vw: px(xs), $max-vw: px(xl)) {
+	$u1: unit($min-vw);
+	$u2: unit($max-vw);
+	$u3: unit($min-font-size);
+	$u4: unit($max-font-size);
+
+	@if $u1 == $u2 and $u1 == $u3 and $u1 == $u4 {
+		& {
+			font-size: $min-font-size;
+			@media screen and (min-width: $min-vw) {
+				font-size: calc(#{$min-font-size} + #{no-unit($max-font-size - $min-font-size)} * ((100vw - #{$min-vw}) / #{no-unit($max-vw - $min-vw)}));
+			}
+			@media screen and (min-width: $max-vw) {
+				font-size: $max-font-size;
+			}
+		}
+	}
+}
+
+///
+/// Generate variable property(s) size.
+///
+/// @param {string | list}   $props - CSS property(s).
+/// @param {number | list}   $min   - Minimum value or map of breakpoint values.
+/// @param {number | list }  $max   - Maximum value or map of breakpoint values.
+/// @param {number | string} $from  - Breakpoint to scale from.
+/// @param {number | string} $to    - Breakpoint to scale to.
+///
+@mixin vary( $props, $min, $max: null, $from: min, $to: max ) {
+	$values: null;
+
+	@if type-of( $min ) == map {
+		$values: $min;
+		$min: null;
+
+	} @else if type-of( $max ) == map {
+		$values: $max;
+	}
+
+	@if $min {
+		@include props( $props, $min );
+	}
+
+	@if $values {
+
+		$points: map-keys( $values );
+		$count : length( $points );
+		$index : 1;
+
+		@each $point, $value in $values {
+			$index: $index + 1;
+
+			@if type-of( $value ) == number {
+				// Next breakpoint
+				$point-to: if( $index > $count, null, nth( $points, $index ) );
+
+				// Next breakpoint value
+				$value-to: if( $point-to, map-get( $values, $point-to ), null );
+
+				@if $point-to and type-of( $value-to ) == number and unit( $value-to ) != '' {
+					$value: vary( $value, $value-to, $point, $point-to );
+				}
+			}
+
+			@include bp( $point ) {
+				@include props( $props, $value );
+			}
+		}
+
+	} @else {
+
+		@include bp( $from ) {
+			@include props( $props, vary( $min, $max, $from, $to ) );
+		}
+
+		@include bp( $to ) {
+			@include props( $props, $max );
+		}
+
+	}
+}
+
+@mixin utilityClasses($items) {
+	@each $item, $props in $items {
+		.#{$item} {
+		    @each $prop, $value in $props {
+		        #{$prop}: #{$value};
+		    }
+		}
+
+		// @each $point, $value in $sizes {
+		// 	@include bp($value) {
+		// 		.#{$point}\:#{$item} {
+		// 			@each $prop, $value in $props {
+		// 				#{$prop}: #{$value};
+		// 			}
+		// 		}
+		// 	}
+		// }
+	}
+}
+
+
+///
+/// Generate CSS properties with the same value.
+///
+/// @param {string | list} $props - CSS property(s).
+/// @param {mixed}         $value
+///
+@mixin props( $props, $value ) {
+	@each $prop in $props {
+		#{$prop}: $value;
+	}
+}
+
+@mixin prop($name, $initial, $data) {
+	#{$name}: $initial;
+	@each $point, $value in $data {
+		@include bp(#{$point}) {
+			#{$name}: #{$value};
+		}
+	}
+}
+
+///
+/// Generate font properties.
+///
+/// @param {string} $name
+///
+@mixin font( $name ) {
+	@each $prop, $value in map-get( $fonts, $name ) {
+		#{$prop}: #{$value};
+	}
+}
+
+///
+/// Generate breakpoint media query by point name or value.
+///
+/// @param {number | string} $point                - A size name or value.
+/// @param {number | string} $break    [min-width] - Either a maximum size name or value, or the media query break.
+/// @param {string}          $property [width]     - If both $point and $break are sizes, the media query dimension.
+///
+@mixin bp( $point, $break: min-width, $property: width ) {
+	$point: size( $point );
+	$break: size( $break );
+
+	@if unit( $point ) != px {
+		$point: em( $point );
+	}
+
+	@if type-of( $break ) == string and str-index( $break, max ) {
+		// Max breakpoints are automatically reduced by ~1px
+		$point: if( unit( $point ) == px, $point - 1px, $point - 0.001em );
+	}
+
+	@if type-of( $break ) == number {
+		// Max breakpoints are automatically reduced by ~1px
+		$break: if( unit( $break ) == px, $break - 1px, em( $break ) - 0.001em );
+
+		@media (min-#{$property}: $point ) and (max-#{$property}: $break) {
+			@content
+		}
+	} @else {
+		@media ($break: $point) {
+			@content
+		}
+	}
+}
+
+@mixin aspect-ratio($ratio: 1 1) {
+	padding-top: nth($ratio, 2) / nth($ratio, 1) * 100%;
+}
+
+@mixin column-width($cols) {
+	max-width: calc((((var(--container-width-max) + var(--grid-gutter)) / var(--grid-columns-max)) * #{$cols}) - var(--grid-gutter));
+}
+
+@mixin grid() {
+	display: grid;
+	gap: var(--grid-gutter-row) var(--grid-gutter);
+	grid-template-columns: repeat(var(--_cols, 1), minmax(0, 1fr));
+	align-items: start;
+}
+
+@mixin grid-cols($cols: null) {
+	@each $point, $value in $cols {
+		@include bp(#{$point}) {
+			--_cols: #{$value};
+		}
+	}
+}

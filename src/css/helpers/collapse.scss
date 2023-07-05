@@ -1,0 +1,9 @@
+@mixin collapse {
+	> :first-child { margin-top: 0 !important; }
+	> :last-child { margin-bottom: 0 !important; }
+}
+
+.collapse,
+%collapse {
+	@include collapse;
+}

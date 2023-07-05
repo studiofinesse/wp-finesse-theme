@@ -1,0 +1,17 @@
+@import "lib/functions";
+@import "lib/mixins";
+@import "lib/config";
+
+@import 'base/preflight';
+// @import 'base/fonts';
+@import 'base/typography';
+
+@import 'helpers/*';
+
+@import 'objects/*';
+
+.mce-content-body {
+	@extend .prose;
+
+	margin: clamp(1.5rem, 3.5vw, 3rem);
+}

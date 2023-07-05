@@ -1,0 +1,6 @@
+#
+# Prevent direct access to theme PHP files
+#
+<FilesMatch "\.php$">
+	Require all denied
+</FilesMatch>

@@ -1,0 +1,37 @@
+:root {
+	--button-padding-block: 1em;
+	--button-padding-inline: 2em;
+	--button-bg: var(--clr-black);
+	--button-color: var(--clr-white);
+	--button-font-size: #{rem(14px)};
+}
+
+@include bp(lg) {
+	.btn:not(.btn-sm) {
+		--button-font-size: #{rem(16px)};
+	}
+}
+
+.button,
+.btn,
+%btn {
+	cursor: pointer;
+
+	display: inline-flex;
+	gap: .5em;
+
+	padding: var(--button-padding-block) var(--button-padding-inline);
+
+	background: var(--button-bg);
+	
+	color: var(--button-color);
+	font-size: var(--button-font-size);
+	font-family: var(--font-body);
+	line-height: 1.2;
+
+	transition: transform .15s ease-in-out;
+
+	&:hover {
+		transform: scale(1.05);
+	}
+}

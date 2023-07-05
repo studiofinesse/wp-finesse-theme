@@ -1,0 +1,46 @@
+:root {
+	// Container Options
+	--container-max-width: #{rem(1272px)};
+	--container-width: calc(100% - (var(--container-margin) * 2));
+	--container-margin: #{rem(24px)};
+
+	@include bp(sm) {
+		--container-margin: #{rem(32px)};
+	}
+
+	@include bp(md) {
+		--container-margin: #{rem(48px)};
+	}
+
+	@include bp(lg) {
+		--container-margin: #{rem(80px)};
+	}
+}
+
+@include utilityClasses((
+	container: (
+		width: var(--container-width),
+		max-width: var(--container-max-width),
+		margin-left: auto,
+		margin-right: auto
+	)
+));
+
+.container-full {
+	--container-width: 100%;
+}
+
+@include bp(xl) {
+	.container-slim,
+	.container-narrow {
+		--container-width: calc((((var(--container-max-width) + var(--grid-gap)) / var(--grid-columns-max)) * var(--grid-columns) - var(--grid-gap)));
+	}
+
+	.container-slim {
+		--grid-columns: 10;
+	}
+
+	.container-narrow {
+		--grid-columns: 8;
+	}
+}

@@ -1,0 +1,35 @@
+{
+	"private": true,
+	"type": "module",
+	"browserslist": [
+		"> 5%"
+	],
+	"scripts": {
+		"build": "gulp build",
+		"dev": "gulp --dev"
+	},
+	"devDependencies": {
+		"autoprefixer": "*",
+		"browser-sync": "*",
+		"fs-extra": "*",
+		"gulp": "*",
+		"gulp-clean-css": "*",
+		"gulp-include": "*",
+		"gulp-load-plugins": "*",
+		"gulp-plumber": "*",
+		"gulp-postcss": "*",
+		"gulp-sass": "*",
+		"gulp-sourcemaps": "*",
+		"gulp-terser": "*",
+		"gulp-touch-fd": "*",
+		"node-notifier": "*",
+		"node-sass": "*",
+		"node-sass-magic-importer": "*",
+		"postcss-easings": "*",
+		"postcss-inline-svg": "*",
+		"postcss-reporter": "*",
+		"postcss-sort-media-queries": "*",
+		"postcss-url": "*",
+		"through2": "*"
+	}
+}

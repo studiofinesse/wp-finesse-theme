@@ -1,0 +1,4 @@
+/browsersync.json
+/node_modules
+/dist
+*.log
